@@ -3,15 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Node.js Scalable Chat</title>
+  <title>Scalable Node.js Chat (MVC + Clustering)</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 20px; }
     #chat { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; }
     #messageForm { margin-top: 10px; }
+    .notification { font-style: italic; color: gray; }
+    .own-message { font-weight: bold; }
   </style>
 </head>
 <body>
-  <h1>Real-time Chat with Node.js Clustering</h1>
+  <h1>Real-time Scalable Chat with Node.js</h1>
   <div id="chat"></div>
   <form id="messageForm">
     <input id="messageInput" autocomplete="off" placeholder="Type a message..." required />

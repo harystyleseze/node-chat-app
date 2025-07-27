@@ -1,166 +1,234 @@
-# Scalable Real-time Chat Application with Node.js, Cluster, and PM2
+# 📡 Node.js Real-time Chat App (MVC + Clustering + PM2)
 
-## Overview
+A scalable, real-time chat application built with **Node.js**, **Express**, **Socket.io**, and **PM2** using a **clean MVC architecture**, supporting:
 
-This project is a **simple real-time chat application** built using **Node.js**, **Express**, and **Socket.io**. It demonstrates the scalability capabilities of Node.js by leveraging the **cluster module** to utilize multiple CPU cores, and **PM2** to manage multiple worker processes for better performance and reliability.
-
----
-
-## What is This?
-
-* A web-based chat app where users can send and receive messages instantly.
-* Uses **Socket.io** for real-time, bi-directional communication between clients and the server.
-* Utilizes **Node.js cluster module** to spawn multiple worker processes to maximize CPU usage.
-* Managed by **PM2**, a process manager that handles clustering, automatic restarts, and monitoring.
+* Real-time messaging with **Socket.io**
+* Persistent chat history (stored in a JSON file)
+* **Usernames** with join/leave notifications
+* **Cluster mode** for multi-core scalability
+* **PM2** for production-grade process management
 
 ---
 
-## Why Use Clustering and PM2?
-
-Node.js runs on a single thread, which limits it to one CPU core by default. The cluster module allows Node.js to:
-
-* Fork multiple worker processes.
-* Each worker can handle requests independently.
-* Take advantage of multi-core CPU architectures, improving throughput.
-
-PM2 simplifies running Node.js apps in cluster mode with:
-
-* Easy process management.
-* Load balancing across workers.
-* Automatic restarts on failure.
-* Monitoring tools.
-
-Together, they enhance the app’s ability to handle many simultaneous connections efficiently.
-
----
-
-## Project Structure
+## 🔧 Project Structure
 
 ```
 node-chat-app/
 │
-├── public/
-│   ├── index.html       # Frontend HTML interface
-│   └── script.js        # Client-side JS for Socket.io communication
+├── chatHistory.json         # Persistent chat history (last 100 messages)
 │
-├── server.js            # Node.js backend with clustering and Socket.io
-├── package.json         # Project dependencies
-└── README.md            # This documentation file
+├── public/                  # Static frontend files
+│   ├── index.html           # Chat interface
+│   └── script.js            # Frontend JS (Socket.io client)
+│
+├── src/
+│   ├── controllers/         # Chat logic (socket and history management)
+│   │   └── chatController.js
+│   │
+│   ├── models/              # File-based chat history storage
+│   │   └── messageModel.js
+│   │
+│   ├── routes/              # REST API routes
+│   │   └── chatRoutes.js
+│   │
+│   ├── app.js               # Express app and socket.io integration
+│   └── server.js            # Clustered server using Node.js cluster module
+│
+├── package.json
+└── README.md
 ```
 
 ---
 
-## Getting Started
+## ✨ Features
 
-### Prerequisites
-
-* [Node.js](https://nodejs.org/en/download/) (v12+ recommended)
-* npm (comes with Node.js)
-* (Optional) PM2 globally installed
+* ✅ **Real-time chat** using `Socket.io`
+* ✅ **Usernames** with `prompt()` and identity tracking
+* ✅ **Join/Leave notifications**
+* ✅ **Persistent chat history** (up to last 100 messages) stored in `chatHistory.json`
+* ✅ **REST API endpoint** to fetch chat history (`GET /api/chat/history`)
+* ✅ **Clustered server** using `Node.js cluster` to utilize all CPU cores
+* ✅ **PM2 integration** for process management, clustering, and monitoring
+* ✅ **Clean MVC structure** separating concerns
 
 ---
 
-### Installation
+## 🖥️ Frontend UI
 
-1. Clone the repository or download the files.
+* HTML/CSS/JS based, no frameworks needed
+* Socket.io client integration
+* Prompts user for a **username** on connect
+* Displays messages and system notifications
 
-2. Install dependencies:
+---
+
+## 📦 Requirements
+
+* Node.js (v14 or later)
+* npm
+* PM2 (optional for production)
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the Repository
 
 ```bash
-npm install express socket.io
+git clone https://github.com/harystyleseze/node-chat-app.git
+cd node-chat-app
 ```
 
-3. (Optional) Install PM2 globally for process management:
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Start the App (Single Process, for Dev)
+
+```bash
+node src/server.js
+```
+
+Open your browser and go to:
+👉 `http://localhost:3000`
+
+---
+
+## 📡 Real-time Chat Usage
+
+* On load, you're asked to enter a **username**.
+* Messages are broadcast to **all users**.
+* Users are notified when **someone joins or leaves**.
+* Up to 100 messages are saved in `chatHistory.json`.
+
+---
+
+## 🧪 API Endpoints
+
+| Method | Endpoint            | Description                            |
+| ------ | ------------------- | -------------------------------------- |
+| GET    | `/api/chat/history` | Returns last 100 chat messages in JSON |
+
+Example:
+
+```bash
+curl http://localhost:3000/api/chat/history
+```
+
+---
+
+## ⚙️ Cluster Mode (Multi-Core)
+
+Uses Node's `cluster` module in `src/server.js` to fork one worker per CPU core.
+
+```bash
+node src/server.js
+```
+
+Each worker handles its own socket connections and serves the same shared chat history.
+
+---
+
+## 🔁 Run with PM2 (Recommended for Production)
+
+### 1. Install PM2 globally (if not already):
 
 ```bash
 npm install -g pm2
 ```
 
----
-
-## Running the Application
-
-### Run using Node (single master process with workers)
+### 2. Start app in cluster mode with all CPU cores:
 
 ```bash
-node server.js
+pm2 start src/server.js -i max --name node-chat-app
 ```
 
-* Opens a server at [http://localhost:3000](http://localhost:3000)
-* Open multiple browser tabs/windows and chat between them.
-* Terminal shows logs indicating which worker process handles connections and messages.
-
----
-
-### Run using PM2 (cluster mode with multiple worker processes)
+### 3. Monitor logs:
 
 ```bash
-pm2 start server.js -i max
+pm2 logs node-chat-app
 ```
 
-* `-i max` runs as many worker processes as CPU cores.
-* PM2 manages the lifecycle, restarting crashed workers automatically.
-* Monitor status with:
+### 4. List all PM2 processes:
 
 ```bash
 pm2 list
 ```
 
-* Stop all PM2 processes with:
+### 5. Stop or restart:
 
 ```bash
-pm2 stop all
+pm2 stop node-chat-app
+pm2 restart node-chat-app
 ```
 
 ---
 
-## How to Use
+## 🧼 Cleaning Up
 
-1. Open [http://localhost:3000](http://localhost:3000) in multiple browser tabs or devices.
-2. Type messages in the input box and click **Send** or press Enter.
-3. Messages appear instantly on all connected clients (except the sender’s message is labeled “You”).
-4. Watch terminal logs showing worker process IDs handling messages.
+To reset chat history:
 
----
-
-## How This Demonstrates Node.js Scalability
-
-* **Event-driven, non-blocking architecture:** Efficiently handles multiple clients without blocking.
-* **Clustering:** Uses multiple CPU cores, improving performance under load.
-* **Socket.io:** Handles real-time messaging with WebSocket fallback, providing a robust communication channel.
-* **PM2:** Simplifies process management, enabling zero-downtime reloads and auto restarts.
-
-This setup can be further scaled horizontally by deploying multiple machines behind a load balancer.
+```bash
+rm chatHistory.json
+```
 
 ---
 
-## Expected Output
+## 🛠 Tech Stack
 
-* Real-time message exchange between users.
-* Multiple worker processes running in terminal logs.
-* Smooth, lag-free chat even when multiple clients are connected.
-* PM2 monitoring multiple clustered processes.
-
----
-
-## Troubleshooting & Tips
-
-* If port 3000 is busy, change the `PORT` variable in `server.js` or set environment variable `PORT=your_port`.
-* Make sure PM2 is installed globally to use `pm2` commands.
-* For production, consider using HTTPS and environment variables for configuration.
-* To stop PM2-managed apps, use `pm2 stop server` or `pm2 delete server`.
+* **Backend**: Node.js, Express, Socket.io
+* **Frontend**: Vanilla HTML, CSS, JS
+* **Architecture**: MVC (Model-View-Controller)
+* **Process Manager**: PM2
+* **Clustering**: Node.js `cluster` module
 
 ---
 
-## Further Improvements
+## 🧠 Architecture Overview
 
-* Add user authentication.
-* Persist chat history with a database (MongoDB, Redis).
-* Add private messaging and rooms.
-* Deploy on cloud platforms with horizontal scaling (Kubernetes, Docker Swarm).
+### MVC Breakdown:
+
+* **Model (`messageModel.js`)**: Handles persistent chat history using a JSON file.
+* **Controller (`chatController.js`)**: Manages socket events, user tracking, broadcasting messages.
+* **View (`public/`)**: User interface, message input, and rendering.
+* **Route (`chatRoutes.js`)**: REST API for chat history.
+
+### Scaling with Clustering
+
+* Master process forks `n` workers (where `n = #CPU cores`)
+* Each worker runs its own server instance
+* If a worker crashes, the master restarts it
 
 ---
 
-## License
+## 🛡 Security Notes (for Production based feature)
 
-MIT License — free to use and modify!
+* Sanitize and validate usernames/messages
+* Rate-limit incoming events
+* Enable Redis or a DB for scalable history
+* Use HTTPS + authentication for secure production setup
+
+---
+
+## 📝 Future Enhancements
+
+* ✅ Private messaging (DMs)
+* ✅ Typing indicators
+* ✅ Online user list
+* ✅ Migrate storage to a real database (MongoDB, PostgreSQL)
+* ✅ User login system
+
+---
+
+## 👨‍💻 Author
+
+**Your Name**
+GitHub: [@harystyleseze](https://github.com/harystyleseze)
+
+---
+
+## 📄 License
+
+MIT License
