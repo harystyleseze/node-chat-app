@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Node.js Scalable Chat</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    #chat { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; }
+    #messageForm { margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Real-time Chat with Node.js Clustering</h1>
+  <div id="chat"></div>
+  <form id="messageForm">
+    <input id="messageInput" autocomplete="off" placeholder="Type a message..." required />
+    <button type="submit">Send</button>
+  </form>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
